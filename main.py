@@ -160,6 +160,7 @@ pygame.init()
 # textures
 background_day_t = pygame.image.load("images/background_day.png")
 menu_background_t = pygame.image.load("images/menu_background.png")
+settings_background_t = pygame.image.load("images/settings_background.png")
 sun_t = pygame.image.load("images/sun.png")
 tree_ground_t = pygame.image.load("images/tree_ground.png")
 shadow_t = pygame.image.load("images/shadow.png")
@@ -184,58 +185,72 @@ clock = pygame.time.Clock()
 run = True
 fullscreen = True
 scene = 0
+
 """
 0 - menu
 1 - game
 2 - settings
 """
 
+def on_play_click():
+    global scene
+    scene = 1
+
+
+def on_settings_click():
+    global scene
+    scene = 2
+
+
+def on_exit_click():
+    pygame.quit()
+    sys.exit()
+
+
+play_button = Button(
+    screen, pygame.Rect(0.4*WIDTH, 0.5*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_play_click,
+    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_play/", language).t(), border_thickness=15,
+    corner_radius=15, border_color=[9, 97, 9]
+)
+
+
+settings_button = Button(
+    screen, pygame.Rect(0.4 * WIDTH, 0.65 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [117, 117, 117], on_settings_click,
+    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_settings/", language).t(),
+    border_thickness=15,
+    corner_radius=15, border_color=[90, 90, 90]
+)
+
+
+exit_button = Button(
+    screen, pygame.Rect(0.4 * WIDTH, 0.8 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [173, 24, 27], on_exit_click,
+    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_exit/", language).t(),
+    border_thickness=15,
+    corner_radius=15, border_color=[125, 20, 22]
+)
+
+
+def on_back_click():
+    global scene
+    scene = 0
+
+back_button = Button(
+    screen, pygame.Rect(0.02*WIDTH, 0.02*WIDTH, WIDTH*0.2, HEIGHT*0.1), [173, 24, 27], on_back_click,
+    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_back/", language).t(), border_thickness=15,
+    corner_radius=15, border_color=[125, 20, 22]
+)
+
 while run:
     if scene == 0:
-        def on_play_click():
-            global scene
-            scene = 1
-
-        def on_settings_click():
-            global scene
-            scene = 2
-
-        def on_exit_click():
-            pygame.quit()
-            sys.exit()
-
-
-
         bg = screen.blit(pygame.transform.scale(
             menu_background_t, (WIDTH, HEIGHT)), (0, 0))
 
         title = screen.blit(pygame.transform.scale(
             sconker_logo_t, (WIDTH*0.6, WIDTH*0.21531)), (WIDTH*0.2, HEIGHT*0.03))
 
-        play_button = Button(
-            screen, pygame.Rect(0.4*WIDTH, 0.5*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_play_click,
-            font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_play/", language).t(), border_thickness=15,
-            corner_radius=15, border_color=[9, 97, 9]
-        )
         play_button.handle()
-
-        settings_button = Button(
-            screen, pygame.Rect(0.4 * WIDTH, 0.65 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [117, 117, 117], on_settings_click,
-            font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_settings/", language).t(),
-            border_thickness=15,
-            corner_radius=15, border_color=[90, 90, 90]
-        )
         settings_button.handle()
-
-        exit_button = Button(
-            screen, pygame.Rect(0.4 * WIDTH, 0.8 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [173, 24, 27], on_exit_click,
-            font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_exit/", language).t(),
-            border_thickness=15,
-            corner_radius=15, border_color=[125, 20, 22]
-        )
         exit_button.handle()
-
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -272,7 +287,6 @@ while run:
                     shadow_t, (shadow_size, shadow_size)
                 ), (conker.position[0]-shadow_size/2, conker.position[1]-shadow_size/2))
 
-
             # the conker
             if conker.growing:
                 conker.actual_size = conker.size*grown_percent
@@ -280,7 +294,6 @@ while run:
 
                 screen.blit(pygame.transform.rotate(
                     pygame.transform.scale(conker_t, (
-
                         conker.actual_size,
                         conker.actual_size)
 
@@ -298,13 +311,14 @@ while run:
                     scene = 0
 
     elif scene == 2:  # settings
-        screen.fill((121, 121, 121))
+        bg = screen.blit(pygame.transform.scale(
+            settings_background_t, (WIDTH, HEIGHT)), (0, 0))
+
+        back_button.handle()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    scene = 0
 
     pygame.display.update()
     clock.tick(FPS)

@@ -82,7 +82,7 @@ class TranslatedString:
 
 
 if __name__ == "__main__":
-    create_key(key="menu_settings")
-    add_translation("menu_settings", "en", "Settings")
-    add_translation("menu_settings", "ru", "Настройки")
-    print(TranslatedString("$/menu_exit/", "en").t())
+    create_key(key="menu_back")
+    add_translation("menu_back", "en", "Back")
+    add_translation("menu_back", "ru", "Вернуться")
+    print(TranslatedString("$/menu_back/", "en").t())
