@@ -180,7 +180,15 @@ no_frame_toggle = True  # TODO: remove this later
 
 pygame.display.set_caption("Sconker")
 
-language = "en"
+with open("files/settings", "r") as f:
+    language = f.readlines()[0].split("language=")[1]
+
+languages_list = {
+    "en": "English",
+    "ru": "Русский",
+    "de": "Deutsch"
+}
+
 clock = pygame.time.Clock()
 run = True
 fullscreen = True
@@ -238,6 +246,32 @@ back_button = Button(
     screen, pygame.Rect(0.02*WIDTH, 0.02*WIDTH, WIDTH*0.2, HEIGHT*0.1), [173, 24, 27], on_back_click,
     font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_back/", language).t(), border_thickness=15,
     corner_radius=15, border_color=[125, 20, 22]
+)
+
+def on_language_click():
+    global language, languages_list, language_button
+    current_language_index = list(languages_list.keys()).index(language)
+    try:
+        language = list(languages_list.keys())[current_language_index+1]
+    except IndexError:
+        language = list(languages_list.keys())[0]
+    language_button.text = languages_list[language]
+
+    with open("files/settings", "r") as f:
+        lines = f.readlines()
+
+    lines[0] = f"language={language}"
+
+    with open("files/settings", "w") as f:
+        f.writelines(lines)
+
+
+
+
+language_button = Button(
+    screen, pygame.Rect(0.4*WIDTH, 0.2*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_language_click,
+    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=languages_list[language], border_thickness=15,
+    corner_radius=15, border_color=[9, 97, 9]
 )
 
 while run:
@@ -315,6 +349,14 @@ while run:
             settings_background_t, (WIDTH, HEIGHT)), (0, 0))
 
         back_button.handle()
+
+        language_label = pygame.font.Font("files/Oswald-VariableFont_wght.ttf", int(WIDTH/20)).render(
+            tStr("$/settings_language/:", language).t(),
+            True, (255, 255, 255))
+
+        screen.blit(language_label, (WIDTH*0.5-language_label.get_width()//2, HEIGHT*0.05))
+
+        language_button.handle()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

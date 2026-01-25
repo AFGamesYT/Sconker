@@ -1,10 +1,9 @@
 import pygame
-import TranslationModule
 
 class Button:
     def __init__(self, scr: pygame.Surface, rect: pygame.Rect | tuple[int, int, int, int], color: list[int],
                  on_click_func, image_path: str | None = None,
-                 btn_text: str | TranslationModule.TranslatedString = "", btntext_color: list[int] = (255, 255, 255),
+                 btn_text: str = "", btntext_color: list[int] = (255, 255, 255),
                  font_path: str | None = None,
                  text_size: int = 0, border_thickness: int = 5, border_color: list[int] = (255, 255, 255),
                  corner_radius: int = 0) -> None:
@@ -13,10 +12,9 @@ class Button:
         Required arguments (in this order):
             - Surface, Rect, Color, On Click Function
         Unrequired arguments (in this order, after the required arguments):
-            - Button Text, Button Text Color, Font Path, Text Size*, Border Thickness, Border Color, Corner Radius
+            - Button Text*, Button Text Color, Font Path, Text Size**, Border Thickness, Border Color, Corner Radius
 
-
-        *If the Text Size is set to 0, then, it uses this formula to calculate the size:
+        **If the Text Size is set to 0, then, it uses this formula to calculate the size:
 
         rh = Rect Height (4th Rect argument)
         Text Size = rh - (rh // 3)
