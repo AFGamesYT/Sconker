@@ -12,33 +12,33 @@
 import json
 
 def create_key(key, default=None, path="translation.json"):
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-16") as f:
         try:
             trnsl = json.load(f)
         except json.decoder.JSONDecodeError:
             print("[TranslationModule] File is empty!")
             trnsl = {}
 
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-16") as f:
         if default is not None:
             trnsl[key] = {default: key}
 
-        json.dump(trnsl, f)
+        json.dump(trnsl, f, indent=4, ensure_ascii=True)
 
 
 def add_translation(key, lang, translation, path="translation.json"):
-    with open(path, "r") as f:
+    with open(path, "r", encoding="utf-16") as f:
         try:
             trnsl = json.load(f)
         except json.decoder.JSONDecodeError:
             print("[TranslationModule] File is empty!")
             trnsl = {}
 
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-16") as f:
         trnsl.setdefault(key, {}).setdefault(lang, []).append(translation)
         trnsl[key][lang] = translation
 
-        json.dump(trnsl, f)
+        json.dump(trnsl, f, indent=4, ensure_ascii=True)
 
 
 class TranslatedString:
@@ -82,7 +82,8 @@ class TranslatedString:
 
 
 if __name__ == "__main__":
-    # create_key(key="settings_language")
-    add_translation("menu_back", "de", "Zurück")
-    # add_translation("settings_language", "ru", "Язык")
-    print(TranslatedString("$/settings_language/:", "de").t())
+    create_key(key="menu_continue")
+    add_translation("menu_continue", "ru", "Продолжить")
+    add_translation("menu_continue", "en", "Continue")
+    add_translation("menu_continue", "de", "Weiter")
+    # print(TranslatedString("$/settings_language/:", "de").t())
