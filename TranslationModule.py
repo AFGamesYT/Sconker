@@ -62,7 +62,7 @@ class TranslatedString:
             if "/" in val:
                 keys.append(val[0:val.index("/")])
 
-        with open(self.path, "r") as f:
+        with open(self.path, "r", encoding="utf-16") as f:
             try:
                 trnsl = json.load(f)
             except json.decoder.JSONDecodeError:

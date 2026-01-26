@@ -214,39 +214,9 @@ def on_exit_click():
     pygame.quit()
     sys.exit()
 
-
-play_button = Button(
-    screen, pygame.Rect(0.4*WIDTH, 0.5*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_play_click,
-    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_play/", language).t(), border_thickness=15,
-    corner_radius=15, border_color=[9, 97, 9]
-)
-
-
-settings_button = Button(
-    screen, pygame.Rect(0.4 * WIDTH, 0.65 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [117, 117, 117], on_settings_click,
-    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_settings/", language).t(),
-    border_thickness=15,
-    corner_radius=15, border_color=[90, 90, 90]
-)
-
-
-exit_button = Button(
-    screen, pygame.Rect(0.4 * WIDTH, 0.8 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [173, 24, 27], on_exit_click,
-    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_exit/", language).t(),
-    border_thickness=15,
-    corner_radius=15, border_color=[125, 20, 22]
-)
-
-
 def on_back_click():
     global scene
     scene = 0
-
-back_button = Button(
-    screen, pygame.Rect(0.02*WIDTH, 0.02*WIDTH, WIDTH*0.2, HEIGHT*0.1), [173, 24, 27], on_back_click,
-    font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_back/", language).t(), border_thickness=15,
-    corner_radius=15, border_color=[125, 20, 22]
-)
 
 def on_language_click():
     global language, languages_list, language_button
@@ -262,17 +232,64 @@ def on_language_click():
 
     lines[0] = f"language={language}"
 
+    init_buttons()
+
     with open("files/settings", "w") as f:
         f.writelines(lines)
 
-
-
-
+play_button = None
+settings_button = None
+exit_button = None
+back_button = None
 language_button = Button(
     screen, pygame.Rect(0.4*WIDTH, 0.2*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_language_click,
     font_path="files/Oswald-VariableFont_wght.ttf", btn_text=languages_list[language], border_thickness=15,
     corner_radius=15, border_color=[9, 97, 9]
 )
+
+
+def init_buttons():
+    global play_button, settings_button, exit_button, back_button, language_button
+
+    play_button = Button(
+        screen, pygame.Rect(0.4*WIDTH, 0.5*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_play_click,
+        font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_play/", language).t(), border_thickness=15,
+        corner_radius=15, border_color=[9, 97, 9]
+    )
+
+
+    settings_button = Button(
+        screen, pygame.Rect(0.4 * WIDTH, 0.65 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [117, 117, 117], on_settings_click,
+        font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_settings/", language).t(),
+        border_thickness=15,
+        corner_radius=15, border_color=[90, 90, 90]
+    )
+
+
+    exit_button = Button(
+        screen, pygame.Rect(0.4 * WIDTH, 0.8 * HEIGHT, WIDTH * 0.2, HEIGHT * 0.1), [173, 24, 27], on_exit_click,
+        font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_exit/", language).t(),
+        border_thickness=15,
+        corner_radius=15, border_color=[125, 20, 22]
+    )
+
+
+    back_button = Button(
+        screen, pygame.Rect(0.02*WIDTH, 0.02*WIDTH, WIDTH*0.2, HEIGHT*0.1), [173, 24, 27], on_back_click,
+        font_path="files/Oswald-VariableFont_wght.ttf", btn_text=tStr("$/menu_back/", language).t(), border_thickness=15,
+        corner_radius=15, border_color=[125, 20, 22]
+    )
+
+    # language button not initialized, because it is done seperately.
+    #
+    # language_button = Button(
+    #     screen, pygame.Rect(0.4*WIDTH, 0.2*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_language_click,
+    #     font_path="files/Oswald-VariableFont_wght.ttf", btn_text=languages_list[language], border_thickness=15,
+    #     corner_radius=15, border_color=[9, 97, 9]
+    # )
+
+
+init_buttons()
 
 while run:
     if scene == 0:
