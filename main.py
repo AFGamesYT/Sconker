@@ -176,7 +176,8 @@ HEIGHT = pygame.display.Info().current_h
 FPS = 120
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.NOFRAME)
-no_frame_toggle = True  # TODO: remove this later
+transition_screen = pygame.Surface((WIDTH, HEIGHT))
+transition_screen.set_alpha(0)
 
 pygame.display.set_caption("Sconker")
 
@@ -200,23 +201,60 @@ scene = 0
 2 - settings
 """
 
+def color_fade_transition(surface, color: tuple[int, int, int] = (0, 0, 0), time: int | float = 1, mid_callable=None):
+    """
+    makes a fade transition.\n
+    don't put this on your main surface, it will change the opacity
+    :param surface: surface that the fade animation will happen on
+    :param color: color of the transition
+    :param time: time (in seconds)
+    :param mid_callable: callable that will happen right in the middle of the fade animation
+    :return:
+    """
+    def fade():
+        nonlocal color
+
+        surface.fill(color)
+
+        for i in range(85):
+            surface.set_alpha(i*3)
+            sleep(time / 255)
+
+        if callable(mid_callable):
+            mid_callable()
+
+        for i in range(85):
+            surface.set_alpha(255 - i*3)
+            sleep(time / 255)
+
+
+    fade_thread = Thread(daemon=True, target=fade)
+    fade_thread.start()
+
 def on_play_click():
     global scene
     scene = 1
 
-
 def on_settings_click():
-    global scene
-    scene = 2
+    def change_scene():
+        global scene
+        scene = 2
 
+    color_fade_transition(transition_screen, mid_callable=change_scene, time=1)
 
 def on_exit_click():
-    pygame.quit()
-    sys.exit()
+    def quit_game():
+        global run
+        run = False
+
+    color_fade_transition(transition_screen, mid_callable=quit_game, time=1)
 
 def on_back_click():
-    global scene
-    scene = 0
+    def change_scene():
+        global scene
+        scene = 0
+
+    color_fade_transition(transition_screen, mid_callable=change_scene, time=1)
 
 def on_language_click():
     global language, languages_list, language_button
@@ -237,10 +275,11 @@ def on_language_click():
     with open("files/settings", "w") as f:
         f.writelines(lines)
 
-play_button = None
-settings_button = None
-exit_button = None
-back_button = None
+play_button: Button | None = None
+settings_button: Button | None = None
+exit_button: Button | None = None
+back_button: Button | None = None
+
 language_button = Button(
     screen, pygame.Rect(0.4*WIDTH, 0.2*HEIGHT, WIDTH*0.2, HEIGHT*0.1), [13, 143, 13], on_language_click,
     font_path="files/Oswald-VariableFont_wght.ttf", btn_text=languages_list[language], border_thickness=15,
@@ -378,6 +417,8 @@ while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
+
+    screen.blit(transition_screen, (0, 0))
 
     pygame.display.update()
     clock.tick(FPS)
